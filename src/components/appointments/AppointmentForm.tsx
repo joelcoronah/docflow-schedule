@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, Clock, User, FileText } from 'lucide-react';
+import { CalendarIcon, Clock, User, FileText, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,15 +17,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { Patient, AppointmentType } from '@/types';
+import { PatientForm, PatientFormData } from '@/components/patients/PatientForm';
 import { toast } from 'sonner';
 
 interface AppointmentFormProps {
   patients: Patient[];
   onSubmit: (data: AppointmentFormData) => void;
   onCancel: () => void;
+  onPatientCreated?: (patient: Patient) => void;
 }
 
 export interface AppointmentFormData {
@@ -52,13 +60,14 @@ const timeSlots = Array.from({ length: 20 }, (_, i) => {
   return `${hour.toString().padStart(2, '0')}:${minute}`;
 });
 
-export function AppointmentForm({ patients, onSubmit, onCancel }: AppointmentFormProps) {
+export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated }: AppointmentFormProps) {
   const [date, setDate] = useState<Date>();
   const [patientId, setPatientId] = useState('');
   const [time, setTime] = useState('');
   const [duration, setDuration] = useState('30');
   const [type, setType] = useState<AppointmentType>('checkup');
   const [notes, setNotes] = useState('');
+  const [showPatientDialog, setShowPatientDialog] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,11 +87,54 @@ export function AppointmentForm({ patients, onSubmit, onCancel }: AppointmentFor
     });
   };
 
+  // Handle new patient creation
+  const handlePatientCreated = (patientData: PatientFormData) => {
+    // Create a new patient object with all required fields
+    const newPatient: Patient = {
+      id: `p${Date.now()}`,
+      name: patientData.name,
+      email: patientData.email,
+      phone: patientData.phone,
+      dateOfBirth: patientData.dateOfBirth,
+      address: patientData.address,
+      createdAt: new Date(),
+      notes: patientData.notes,
+      medicalHistory: [],
+    };
+
+    // Notify parent component about the new patient
+    if (onPatientCreated) {
+      onPatientCreated(newPatient);
+    }
+
+    // Select the newly created patient
+    setPatientId(newPatient.id);
+    
+    // Close the patient registration dialog
+    setShowPatientDialog(false);
+    
+    // Show success message
+    toast.success('Patient registered successfully');
+  };
+
   return (
+    <>
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="patient">Patient *</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="patient">Patient *</Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowPatientDialog(true)}
+              className="gap-2"
+            >
+              <UserPlus className="h-4 w-4" />
+              Register New Patient
+            </Button>
+          </div>
           <Select value={patientId} onValueChange={setPatientId}>
             <SelectTrigger>
               <SelectValue placeholder="Select a patient" />
@@ -195,5 +247,19 @@ export function AppointmentForm({ patients, onSubmit, onCancel }: AppointmentFor
         <Button type="submit">Schedule Appointment</Button>
       </div>
     </form>
+
+    {/* New Patient Registration Dialog */}
+    <Dialog open={showPatientDialog} onOpenChange={setShowPatientDialog}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Register New Patient</DialogTitle>
+        </DialogHeader>
+        <PatientForm
+          onSubmit={handlePatientCreated}
+          onCancel={() => setShowPatientDialog(false)}
+        />
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
