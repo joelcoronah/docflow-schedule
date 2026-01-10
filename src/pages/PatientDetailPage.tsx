@@ -5,12 +5,28 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { mockPatients, mockAppointments } from '@/data/mockData';
+import { usePatient } from '@/hooks/use-patients';
+import { useAppointmentsByPatient } from '@/hooks/use-appointments';
+import { parseDateFromAPI } from '@/lib/date-utils';
 
 const PatientDetailPage = () => {
   const { id } = useParams();
-  const patient = mockPatients.find(p => p.id === id);
-  const patientAppointments = mockAppointments.filter(a => a.patientId === id);
+  const { data: patient, isLoading: patientLoading } = usePatient(id!);
+  const { data: appointmentsData, isLoading: appointmentsLoading } =
+    useAppointmentsByPatient(id!);
+
+  const patientAppointments = appointmentsData?.data || [];
+  const isLoading = patientLoading || appointmentsLoading;
+
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-muted-foreground">Loading patient details...</div>
+        </div>
+      </MainLayout>
+    );
+  }
 
   if (!patient) {
     return (
@@ -42,7 +58,9 @@ const PatientDetailPage = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">{patient.name}</h1>
-              <p className="text-muted-foreground">Patient since {format(patient.createdAt, 'MMMM yyyy')}</p>
+              <p className="text-muted-foreground">
+                Patient since {format(parseDateFromAPI(patient.createdAt), 'MMMM yyyy')}
+              </p>
             </div>
           </div>
           <Button className="gap-2">
@@ -77,7 +95,11 @@ const PatientDetailPage = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Date of Birth</p>
-              <p className="text-sm font-medium text-foreground">{format(new Date(patient.dateOfBirth), 'MMM d, yyyy')}</p>
+              <p className="text-sm font-medium text-foreground">
+                {patient.dateOfBirth
+                  ? format(parseDateFromAPI(patient.dateOfBirth), 'MMM d, yyyy')
+                  : 'N/A'}
+              </p>
             </div>
           </div>
         </div>
@@ -100,18 +122,18 @@ const PatientDetailPage = () => {
                 </Button>
               </div>
 
-              {patient.medicalHistory.length === 0 ? (
+              {!patient.medicalRecords || patient.medicalRecords.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">No medical records yet</p>
               ) : (
                 <div className="space-y-4">
-                  {patient.medicalHistory.map((record) => (
+                  {patient.medicalRecords.map((record) => (
                     <div key={record.id} className="rounded-lg border border-border bg-background p-4">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <p className="font-medium text-foreground">{record.diagnosis}</p>
                             <Badge variant="outline">
-                              {format(record.date, 'MMM d, yyyy')}
+                              {format(parseDateFromAPI(record.date), 'MMM d, yyyy')}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mb-2">
@@ -153,7 +175,7 @@ const PatientDetailPage = () => {
                       <div>
                         <p className="font-medium text-foreground capitalize">{apt.type}</p>
                         <p className="text-sm text-muted-foreground">
-                          {format(apt.date, 'EEEE, MMMM d, yyyy')} at {apt.time}
+                          {format(parseDateFromAPI(apt.date), 'EEEE, MMMM d, yyyy')} at {apt.time}
                         </p>
                       </div>
                       <Badge variant={apt.status === 'confirmed' ? 'default' : 'secondary'}>

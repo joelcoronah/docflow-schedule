@@ -11,32 +11,33 @@ import {
 } from '@/components/ui/dialog';
 import { PatientCard } from '@/components/patients/PatientCard';
 import { PatientForm, PatientFormData } from '@/components/patients/PatientForm';
-import { mockPatients } from '@/data/mockData';
-import { Patient } from '@/types';
+import { usePatients, useCreatePatient } from '@/hooks/use-patients';
 import { toast } from 'sonner';
 
 const PatientsPage = () => {
-  const [patients, setPatients] = useState<Patient[]>(mockPatients);
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewPatient, setShowNewPatient] = useState(false);
 
-  const filteredPatients = patients.filter(patient =>
-    patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    patient.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    patient.phone.includes(searchQuery)
-  );
+  // Fetch patients with search
+  const { data: patientsData, isLoading } = usePatients({
+    search: searchQuery || undefined,
+    limit: 100,
+  });
 
-  const handleNewPatient = (data: PatientFormData) => {
-    const newPatient: Patient = {
-      id: `p${Date.now()}`,
-      ...data,
-      createdAt: new Date(),
-      medicalHistory: [],
-    };
+  const createPatientMutation = useCreatePatient();
 
-    setPatients([newPatient, ...patients]);
-    setShowNewPatient(false);
-    toast.success('Patient added successfully');
+  const patients = patientsData?.data || [];
+  const totalPatients = patientsData?.total || 0;
+
+  const handleNewPatient = async (data: PatientFormData) => {
+    try {
+      await createPatientMutation.mutateAsync(data);
+      setShowNewPatient(false);
+      toast.success('Patient added successfully');
+    } catch (error) {
+      toast.error('Failed to add patient');
+      console.error(error);
+    }
   };
 
   return (
@@ -73,22 +74,39 @@ const PatientsPage = () => {
 
         {/* Results Count */}
         <p className="text-sm text-muted-foreground">
-          Showing {filteredPatients.length} of {patients.length} patients
+          Showing {patients.length} of {totalPatients} patients
         </p>
 
-        {/* Patients Grid */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredPatients.map((patient, index) => (
-            <div key={patient.id} style={{ animationDelay: `${index * 50}ms` }} className="animate-slide-up">
-              <PatientCard patient={patient} />
-            </div>
-          ))}
-        </div>
-
-        {filteredPatients.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No patients found matching your search.</p>
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-muted-foreground">Loading patients...</div>
           </div>
+        )}
+
+        {/* Patients Grid */}
+        {!isLoading && (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {patients.map((patient, index) => (
+                <div
+                  key={patient.id}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                  className="animate-slide-up"
+                >
+                  <PatientCard patient={patient} />
+                </div>
+              ))}
+            </div>
+
+            {patients.length === 0 && !isLoading && (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">
+                  No patients found matching your search.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
 

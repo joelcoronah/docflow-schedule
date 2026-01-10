@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { Mail, Phone, Calendar, ChevronRight } from 'lucide-react';
 import { Patient } from '@/types';
 import { Link } from 'react-router-dom';
+import { parseDateFromAPI } from '@/lib/date-utils';
 
 interface PatientCardProps {
   patient: Patient;
@@ -33,10 +34,12 @@ export function PatientCard({ patient }: PatientCardProps) {
               <Phone className="h-3.5 w-3.5" />
               <span>{patient.phone}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-3.5 w-3.5" />
-              <span>DOB: {format(new Date(patient.dateOfBirth), 'MMM d, yyyy')}</span>
-            </div>
+            {patient.dateOfBirth && (
+              <div className="flex items-center gap-2">
+                <Calendar className="h-3.5 w-3.5" />
+                <span>DOB: {format(parseDateFromAPI(patient.dateOfBirth), 'MMM d, yyyy')}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,11 +1,15 @@
-import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { Bell, Calendar, AlertCircle, Info, Check, Trash2 } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
-import { mockNotifications } from '@/data/mockData';
-import { Notification } from '@/types';
+import {
+  useNotifications,
+  useMarkNotificationAsRead,
+  useMarkAllNotificationsAsRead,
+  useDeleteNotification,
+} from '@/hooks/use-notifications';
 import { cn } from '@/lib/utils';
+import { parseDateFromAPI } from '@/lib/date-utils';
 import { toast } from 'sonner';
 
 const iconMap = {
@@ -23,24 +27,41 @@ const colorMap = {
 };
 
 const NotificationsPage = () => {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const { data: notificationsData, isLoading } = useNotifications({ limit: 100 });
+  const markAsReadMutation = useMarkNotificationAsRead();
+  const markAllAsReadMutation = useMarkAllNotificationsAsRead();
+  const deleteNotificationMutation = useDeleteNotification();
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const notifications = notificationsData?.data || [];
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAsRead = (id: string) => {
-    setNotifications(notifications.map(n =>
-      n.id === id ? { ...n, read: true } : n
-    ));
+  const markAsRead = async (id: string) => {
+    try {
+      await markAsReadMutation.mutateAsync(id);
+    } catch (error) {
+      toast.error('Failed to mark notification as read');
+      console.error(error);
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, read: true })));
-    toast.success('All notifications marked as read');
+  const markAllAsRead = async () => {
+    try {
+      await markAllAsReadMutation.mutateAsync();
+      toast.success('All notifications marked as read');
+    } catch (error) {
+      toast.error('Failed to mark all notifications as read');
+      console.error(error);
+    }
   };
 
-  const deleteNotification = (id: string) => {
-    setNotifications(notifications.filter(n => n.id !== id));
-    toast.success('Notification deleted');
+  const deleteNotification = async (id: string) => {
+    try {
+      await deleteNotificationMutation.mutateAsync(id);
+      toast.success('Notification deleted');
+    } catch (error) {
+      toast.error('Failed to delete notification');
+      console.error(error);
+    }
   };
 
   return (
@@ -62,14 +83,22 @@ const NotificationsPage = () => {
           )}
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-muted-foreground">Loading notifications...</div>
+          </div>
+        )}
+
         {/* Notifications List */}
-        <div className="space-y-3 animate-slide-up">
-          {notifications.length === 0 ? (
-            <div className="rounded-xl border border-border bg-card p-12 text-center">
-              <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No notifications yet</p>
-            </div>
-          ) : (
+        {!isLoading && (
+          <div className="space-y-3 animate-slide-up">
+            {notifications.length === 0 ? (
+              <div className="rounded-xl border border-border bg-card p-12 text-center">
+                <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No notifications yet</p>
+              </div>
+            ) : (
             notifications.map((notification, index) => {
               const Icon = iconMap[notification.type];
               return (
@@ -98,7 +127,9 @@ const NotificationsPage = () => {
                           {notification.message}
                         </p>
                         <p className="text-xs text-muted-foreground/60 mt-2">
-                          {formatDistanceToNow(notification.createdAt, { addSuffix: true })}
+                          {formatDistanceToNow(parseDateFromAPI(notification.createdAt), {
+                            addSuffix: true,
+                          })}
                         </p>
                       </div>
 
@@ -125,9 +156,10 @@ const NotificationsPage = () => {
                   </div>
                 </div>
               );
-            })
-          )}
-        </div>
+              })
+            )}
+          </div>
+        )}
       </div>
     </MainLayout>
   );

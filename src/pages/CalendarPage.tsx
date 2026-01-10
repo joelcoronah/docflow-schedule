@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   format,
   startOfMonth,
@@ -9,76 +9,98 @@ import {
   addMonths,
   subMonths,
   isToday,
-} from "date-fns";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import { MainLayout } from "@/components/layout/MainLayout";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+} from 'date-fns';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { MainLayout } from '@/components/layout/MainLayout';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   AppointmentForm,
   AppointmentFormData,
-} from "@/components/appointments/AppointmentForm";
-import { mockAppointments, mockPatients } from "@/data/mockData";
-import { Appointment, Patient } from "@/types";
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+} from '@/components/appointments/AppointmentForm';
+import { useAppointments, useCreateAppointment } from '@/hooks/use-appointments';
+import { usePatients, useCreatePatient } from '@/hooks/use-patients';
+import { Patient } from '@/types';
+import { cn } from '@/lib/utils';
+import { formatDateForAPI, parseDateFromAPI } from '@/lib/date-utils';
+import { toast } from 'sonner';
 
 const statusColors = {
-  scheduled: "bg-warning text-warning-foreground",
-  confirmed: "bg-success text-success-foreground",
-  completed: "bg-muted text-muted-foreground",
-  cancelled: "bg-destructive text-destructive-foreground",
-  "no-show": "bg-destructive text-destructive-foreground",
+  scheduled: 'bg-warning text-warning-foreground',
+  confirmed: 'bg-success text-success-foreground',
+  completed: 'bg-muted text-muted-foreground',
+  cancelled: 'bg-destructive text-destructive-foreground',
+  'no-show': 'bg-destructive text-destructive-foreground',
 };
 
 const CalendarPage = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showNewAppointment, setShowNewAppointment] = useState(false);
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(mockAppointments);
-  const [patients, setPatients] = useState<Patient[]>(mockPatients);
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
+
+  // Fetch appointments and patients
+  const { data: appointmentsData } = useAppointments({
+    startDate: format(monthStart, 'yyyy-MM-dd'),
+    endDate: format(monthEnd, 'yyyy-MM-dd'),
+    limit: 1000,
+  });
+  const { data: patientsData } = usePatients({ limit: 1000 });
+
+  const createAppointmentMutation = useCreateAppointment();
+  const createPatientMutation = useCreatePatient();
+
+  const appointments = appointmentsData?.data || [];
+  const patients = patientsData?.data || [];
+
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
   const getAppointmentsForDay = (date: Date) => {
-    return appointments.filter((a) => isSameDay(a.date, date));
+    return appointments.filter((a) => isSameDay(parseDateFromAPI(a.date), date));
   };
 
-  const handleNewAppointment = (data: AppointmentFormData) => {
-    const patient = patients.find((p) => p.id === data.patientId);
-    if (!patient) return;
-
-    const newAppointment: Appointment = {
-      id: `a${Date.now()}`,
-      patientId: data.patientId,
-      patientName: patient.name,
-      date: data.date,
-      time: data.time,
-      duration: data.duration,
-      type: data.type,
-      status: "scheduled",
-      notes: data.notes,
-    };
-
-    setAppointments([...appointments, newAppointment]);
-    setShowNewAppointment(false);
-    toast.success("Appointment scheduled successfully");
+  const handleNewAppointment = async (data: AppointmentFormData) => {
+    try {
+      await createAppointmentMutation.mutateAsync({
+        patientId: data.patientId,
+        date: formatDateForAPI(data.date), // Use local date without timezone offset
+        time: data.time,
+        duration: data.duration,
+        type: data.type,
+        notes: data.notes,
+      });
+      setShowNewAppointment(false);
+      toast.success('Appointment scheduled successfully');
+    } catch (error) {
+      toast.error('Failed to schedule appointment');
+      console.error(error);
+    }
   };
 
   // Handle new patient creation from appointment form
-  const handlePatientCreated = (newPatient: Patient) => {
-    // Add the new patient to the patients list
-    setPatients([...patients, newPatient]);
-    toast.success("Patient added successfully");
+  const handlePatientCreated = async (newPatient: Patient) => {
+    try {
+      await createPatientMutation.mutateAsync({
+        name: newPatient.name,
+        email: newPatient.email,
+        phone: newPatient.phone,
+        dateOfBirth: newPatient.dateOfBirth,
+        address: newPatient.address,
+        notes: newPatient.notes,
+      });
+      toast.success('Patient added successfully');
+    } catch (error) {
+      toast.error('Failed to add patient');
+      console.error(error);
+    }
   };
 
   const selectedDayAppointments = selectedDate

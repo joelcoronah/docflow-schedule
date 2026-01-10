@@ -1,14 +1,48 @@
-import { Calendar, Users, Clock, AlertCircle } from 'lucide-react';
-import { MainLayout } from '@/components/layout/MainLayout';
-import { StatsCard } from '@/components/dashboard/StatsCard';
-import { UpcomingAppointments } from '@/components/dashboard/UpcomingAppointments';
-import { RecentPatients } from '@/components/dashboard/RecentPatients';
-import { NotificationsWidget } from '@/components/dashboard/NotificationsWidget';
-import { mockAppointments, mockPatients, mockNotifications, mockDashboardStats } from '@/data/mockData';
-import { isSameDay } from 'date-fns';
+import { Calendar, Users, Clock, AlertCircle } from "lucide-react";
+import { MainLayout } from "@/components/layout/MainLayout";
+import { StatsCard } from "@/components/dashboard/StatsCard";
+import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
+import { RecentPatients } from "@/components/dashboard/RecentPatients";
+import { NotificationsWidget } from "@/components/dashboard/NotificationsWidget";
+import { useDashboardStats } from "@/hooks/use-dashboard";
+import { useAppointments } from "@/hooks/use-appointments";
+import { usePatients } from "@/hooks/use-patients";
+import { useNotifications } from "@/hooks/use-notifications";
+import { formatDateForAPI } from "@/lib/date-utils";
 
 const Index = () => {
-  const todayAppointments = mockAppointments.filter(a => isSameDay(a.date, new Date()));
+  const today = formatDateForAPI(new Date());
+
+  // Fetch data using React Query hooks
+  const { data: statsData, isLoading: statsLoading } = useDashboardStats();
+  const { data: appointmentsData, isLoading: appointmentsLoading } =
+    useAppointments({
+      date: today,
+      limit: 10,
+    });
+  const { data: patientsData, isLoading: patientsLoading } = usePatients({
+    limit: 5,
+  });
+  const { data: notificationsData, isLoading: notificationsLoading } =
+    useNotifications({
+      limit: 5,
+    });
+
+  const todayAppointments = appointmentsData?.data || [];
+  const recentPatients = patientsData?.data || [];
+  const notifications = notificationsData?.data || [];
+  const stats = statsData || {
+    todayAppointments: 0,
+    weekAppointments: 0,
+    totalPatients: 0,
+    pendingFollowUps: 0,
+  };
+
+  const isLoading =
+    statsLoading ||
+    appointmentsLoading ||
+    patientsLoading ||
+    notificationsLoading;
 
   return (
     <MainLayout>
@@ -16,49 +50,64 @@ const Index = () => {
         {/* Header */}
         <div className="animate-fade-in">
           <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Welcome back, Dr. Roberts. Here's your practice overview.</p>
+          <p className="text-muted-foreground mt-1">
+            Welcome back, Dr. Roberts. Here's your practice overview.
+          </p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Today's Appointments"
-            value={mockDashboardStats.todayAppointments}
+            value={stats.todayAppointments}
             icon={Calendar}
             variant="primary"
           />
           <StatsCard
             title="This Week"
-            value={mockDashboardStats.weekAppointments}
+            value={stats.weekAppointments}
             icon={Clock}
             trend={{ value: 12, isPositive: true }}
           />
           <StatsCard
             title="Total Patients"
-            value={mockDashboardStats.totalPatients}
+            value={stats.totalPatients}
             icon={Users}
             variant="success"
           />
           <StatsCard
             title="Pending Follow-ups"
-            value={mockDashboardStats.pendingFollowUps}
+            value={stats.pendingFollowUps}
             icon={AlertCircle}
             variant="accent"
           />
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <UpcomingAppointments appointments={todayAppointments} />
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-muted-foreground">
+              Loading dashboard data...
+            </div>
           </div>
-          <div className="space-y-6">
-            <NotificationsWidget notifications={mockNotifications} />
-          </div>
-        </div>
+        )}
 
-        {/* Recent Patients */}
-        <RecentPatients patients={mockPatients} />
+        {/* Main Content Grid */}
+        {!isLoading && (
+          <>
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <UpcomingAppointments appointments={todayAppointments} />
+              </div>
+              <div className="space-y-6">
+                <NotificationsWidget notifications={notifications} />
+              </div>
+            </div>
+
+            {/* Recent Patients */}
+            <RecentPatients patients={recentPatients} />
+          </>
+        )}
       </div>
     </MainLayout>
   );
