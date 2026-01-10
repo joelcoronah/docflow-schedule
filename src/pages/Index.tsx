@@ -46,17 +46,17 @@ const Index = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-8">
+      <div className="space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Header */}
         <div className="animate-fade-in">
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">
             Welcome back, Dr. Roberts. Here's your practice overview.
           </p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Today's Appointments"
             value={stats.todayAppointments}
@@ -95,11 +95,11 @@ const Index = () => {
         {/* Main Content Grid */}
         {!isLoading && (
           <>
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <UpcomingAppointments appointments={todayAppointments} />
               </div>
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <NotificationsWidget notifications={notifications} />
               </div>
             </div>

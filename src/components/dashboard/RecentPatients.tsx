@@ -10,28 +10,28 @@ interface RecentPatientsProps {
 
 export function RecentPatients({ patients }: RecentPatientsProps) {
   return (
-    <div className="rounded-xl border border-border bg-card p-6 animate-slide-up">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-foreground">
+    <div className="rounded-lg sm:rounded-xl border border-border bg-card p-4 sm:p-6 animate-slide-up">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold text-foreground">
           Recent Patients
         </h2>
         <Link
           to="/patients"
-          className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+          className="text-xs sm:text-sm text-primary hover:text-primary/80 font-medium transition-colors"
         >
           View All
         </Link>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {patients.slice(0, 5).map((patient, index) => (
           <Link
             key={patient.id}
             to={`/patients/${patient.id}`}
-            className="flex items-center gap-4 rounded-lg p-3 transition-all duration-200 hover:bg-muted group"
+            className="flex items-center gap-3 sm:gap-4 rounded-lg p-2.5 sm:p-3 transition-all duration-200 hover:bg-muted group"
             style={{ animationDelay: `${index * 50}ms` }}
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-primary/10 text-xs sm:text-sm font-semibold text-primary shrink-0">
               {patient.name
                 .split(" ")
                 .map((n) => n[0])
@@ -39,11 +39,11 @@ export function RecentPatients({ patients }: RecentPatientsProps) {
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-foreground truncate">
+              <p className="text-sm sm:text-base font-medium text-foreground truncate">
                 {patient.name}
               </p>
               {patient.createdAt && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">
                   Last visit{" "}
                   {formatDistanceToNow(parseDateFromAPI(patient.createdAt), {
                     addSuffix: true,
@@ -52,7 +52,7 @@ export function RecentPatients({ patients }: RecentPatientsProps) {
               )}
             </div>
 
-            <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
           </Link>
         ))}
       </div>

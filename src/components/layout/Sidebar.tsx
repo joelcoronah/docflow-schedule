@@ -6,9 +6,11 @@ import {
   Bell, 
   Settings,
   Stethoscope,
-  LogOut
+  LogOut,
+  X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
@@ -18,19 +20,51 @@ const navItems = [
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-sidebar text-sidebar-foreground">
-      <div className="flex h-full flex-col">
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          'fixed left-0 top-0 z-50 h-screen w-64 bg-sidebar text-sidebar-foreground transition-transform duration-300 lg:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
+        <div className="flex h-full flex-col">
         {/* Logo */}
-        <div className="flex h-20 items-center gap-3 border-b border-sidebar-border px-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sidebar-primary">
-            <Stethoscope className="h-5 w-5 text-sidebar-primary-foreground" />
+        <div className="flex h-20 items-center justify-between gap-3 border-b border-sidebar-border px-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sidebar-primary">
+              <Stethoscope className="h-5 w-5 text-sidebar-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-sidebar-foreground">MediSchedule</h1>
+              <p className="text-xs text-sidebar-foreground/60">Practice Manager</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-sidebar-foreground">MediSchedule</h1>
-            <p className="text-xs text-sidebar-foreground/60">Practice Manager</p>
-          </div>
+          
+          {/* Close button for mobile */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="lg:hidden text-sidebar-foreground/60 hover:text-sidebar-foreground"
+          >
+            <X className="h-5 w-5" />
+          </Button>
         </div>
 
         {/* Navigation */}
@@ -39,6 +73,7 @@ export function Sidebar() {
             <NavLink
               key={item.path}
               to={item.path}
+              onClick={() => onClose?.()}
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200',
@@ -71,5 +106,6 @@ export function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }

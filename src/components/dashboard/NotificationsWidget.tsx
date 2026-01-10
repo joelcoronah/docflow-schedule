@@ -26,40 +26,40 @@ export function NotificationsWidget({ notifications }: NotificationsWidgetProps)
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6 animate-slide-up">
-      <div className="flex items-center justify-between mb-6">
+    <div className="rounded-lg sm:rounded-xl border border-border bg-card p-4 sm:p-6 animate-slide-up">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-semibold text-foreground">Notifications</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-foreground">Notifications</h2>
           {unreadCount > 0 && (
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
               {unreadCount}
             </span>
           )}
         </div>
-        <Link to="/notifications" className="text-sm text-primary hover:text-primary/80 font-medium transition-colors">
+        <Link to="/notifications" className="text-xs sm:text-sm text-primary hover:text-primary/80 font-medium transition-colors">
           View All
         </Link>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {notifications.slice(0, 4).map((notification, index) => {
           const Icon = iconMap[notification.type];
           return (
             <div
               key={notification.id}
               className={cn(
-                'flex items-start gap-3 rounded-lg p-3 transition-all duration-200',
+                'flex items-start gap-2 sm:gap-3 rounded-lg p-2.5 sm:p-3 transition-all duration-200',
                 !notification.read ? 'bg-primary/5' : 'hover:bg-muted'
               )}
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className={cn('rounded-lg p-2', colorMap[notification.type])}>
-                <Icon className="h-4 w-4" />
+              <div className={cn('rounded-lg p-1.5 sm:p-2 shrink-0', colorMap[notification.type])}>
+                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
               
               <div className="flex-1 min-w-0">
                 <p className={cn(
-                  'text-sm truncate',
+                  'text-xs sm:text-sm truncate',
                   !notification.read ? 'font-medium text-foreground' : 'text-muted-foreground'
                 )}>
                   {notification.title}
@@ -73,7 +73,7 @@ export function NotificationsWidget({ notifications }: NotificationsWidgetProps)
               </div>
 
               {!notification.read && (
-                <div className="h-2 w-2 rounded-full bg-primary mt-1" />
+                <div className="h-2 w-2 rounded-full bg-primary mt-1 shrink-0" />
               )}
             </div>
           );
