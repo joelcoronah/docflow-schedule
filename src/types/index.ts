@@ -7,7 +7,10 @@ export interface Patient {
   address: string;
   createdAt: Date;
   notes: string;
-  medicalHistory: MedicalRecord[];
+  medicalHistory?: MedicalRecord[];
+  medicalRecords?: MedicalRecord[];
+  appointments?: Appointment[];
+  updatedAt?: Date;
 }
 
 export interface MedicalRecord {

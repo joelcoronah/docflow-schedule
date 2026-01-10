@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
 interface PatientFormProps {
+  initialData?: PatientFormData;
   onSubmit: (data: PatientFormData) => void;
   onCancel: () => void;
 }
@@ -19,13 +20,13 @@ export interface PatientFormData {
   notes: string;
 }
 
-export function PatientForm({ onSubmit, onCancel }: PatientFormProps) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [address, setAddress] = useState('');
-  const [notes, setNotes] = useState('');
+export function PatientForm({ initialData, onSubmit, onCancel }: PatientFormProps) {
+  const [name, setName] = useState(initialData?.name || '');
+  const [email, setEmail] = useState(initialData?.email || '');
+  const [phone, setPhone] = useState(initialData?.phone || '');
+  const [dateOfBirth, setDateOfBirth] = useState(initialData?.dateOfBirth || '');
+  const [address, setAddress] = useState(initialData?.address || '');
+  const [notes, setNotes] = useState(initialData?.notes || '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,7 +124,7 @@ export function PatientForm({ onSubmit, onCancel }: PatientFormProps) {
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">Add Patient</Button>
+        <Button type="submit">{initialData ? 'Update Patient' : 'Add Patient'}</Button>
       </div>
     </form>
   );
