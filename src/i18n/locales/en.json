@@ -179,15 +179,35 @@
   },
   "settings": {
     "title": "Settings",
+    "subtitle": "Manage your practice preferences",
     "language": "Language",
     "theme": "Theme",
     "profile": "Profile",
+    "profileDescription": "Your personal information",
     "preferences": "Preferences",
     "selectLanguage": "Select Language",
     "languages": {
       "en": "English",
       "es": "Spanish"
-    }
+    },
+    "saveProfile": "Save Profile",
+    "profileUpdated": "Profile updated successfully",
+    "profileUpdateFailed": "Failed to update profile",
+    "security": "Security",
+    "securityDescription": "Protect your account",
+    "password": "Password",
+    "changePassword": "Change Password",
+    "changePasswordDescription": "Enter a new password for your account",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordChanged": "Password changed successfully",
+    "passwordChangeFailed": "Failed to change password",
+    "passwordsMustMatch": "Passwords must match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "twoFactor": "Two-Factor Authentication",
+    "twoFactorDescription": "Add an extra layer of security",
+    "comingSoon": "Coming soon",
+    "specializationPlaceholder": "e.g., General Dentistry"
   },
   "calendar": {
     "title": "Calendar",

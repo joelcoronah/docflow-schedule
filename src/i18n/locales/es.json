@@ -147,15 +147,35 @@
   },
   "settings": {
     "title": "Configuración",
+    "subtitle": "Gestiona las preferencias de tu consultorio",
     "language": "Idioma",
     "theme": "Tema",
     "profile": "Perfil",
+    "profileDescription": "Tu información personal",
     "preferences": "Preferencias",
     "selectLanguage": "Seleccionar Idioma",
     "languages": {
       "en": "Inglés",
       "es": "Español"
-    }
+    },
+    "saveProfile": "Guardar Perfil",
+    "profileUpdated": "Perfil actualizado exitosamente",
+    "profileUpdateFailed": "Error al actualizar el perfil",
+    "security": "Seguridad",
+    "securityDescription": "Protege tu cuenta",
+    "password": "Contraseña",
+    "changePassword": "Cambiar Contraseña",
+    "changePasswordDescription": "Ingresa una nueva contraseña para tu cuenta",
+    "newPassword": "Nueva Contraseña",
+    "confirmNewPassword": "Confirmar Nueva Contraseña",
+    "passwordChanged": "Contraseña cambiada exitosamente",
+    "passwordChangeFailed": "Error al cambiar la contraseña",
+    "passwordsMustMatch": "Las contraseñas deben coincidir",
+    "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+    "twoFactor": "Autenticación de Dos Factores",
+    "twoFactorDescription": "Agrega una capa extra de seguridad",
+    "comingSoon": "Próximamente",
+    "specializationPlaceholder": "ej., Odontología General"
   },
   "calendar": {
     "title": "Calendario",
