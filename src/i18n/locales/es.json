@@ -17,7 +17,8 @@
     "calendar": "Calendario",
     "patients": "Pacientes",
     "notifications": "Notificaciones",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "users": "Usuarios"
   },
   "dashboard": {
     "title": "Panel de Control",
@@ -193,5 +194,33 @@
     "testCredentials": "Credenciales de prueba",
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "rememberMe": "Recuérdame"
+  },
+  "users": {
+    "title": "Gestión de Usuarios",
+    "subtitle": "Gestionar doctores y administradores",
+    "addUser": "Agregar Usuario",
+    "editUser": "Editar Usuario",
+    "deleteUser": "Eliminar Usuario",
+    "createUser": "Crear Usuario",
+    "addUserDescription": "Crear una nueva cuenta de usuario para un doctor o administrador",
+    "editUserDescription": "Actualizar información y permisos del usuario",
+    "deleteUserConfirmation": "¿Estás seguro de que deseas eliminar a {{name}}? Esta acción no se puede deshacer.",
+    "noUsers": "No se encontraron usuarios",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "phone": "Teléfono",
+    "specialization": "Especialización",
+    "licenseNumber": "Número de Licencia",
+    "role": "Rol",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "activeDescription": "Desactivar para evitar que el usuario inicie sesión",
+    "provider": "Proveedor",
+    "leaveBlankToKeep": "Dejar en blanco para mantener la contraseña actual",
+    "roles": {
+      "doctor": "Doctor",
+      "admin": "Administrador"
+    }
   }
 }

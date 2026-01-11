@@ -7,7 +7,8 @@ import {
   Settings,
   Stethoscope,
   LogOut,
-  X
+  X,
+  UserCog
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
@@ -24,13 +25,24 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
 
-  const navItems = [
+  // Base navigation items for all users
+  const baseNavItems = [
     { icon: LayoutDashboard, label: t('nav.dashboard'), path: '/' },
     { icon: Calendar, label: t('nav.calendar'), path: '/calendar' },
     { icon: Users, label: t('nav.patients'), path: '/patients' },
     { icon: Bell, label: t('nav.notifications'), path: '/notifications' },
     { icon: Settings, label: t('nav.settings'), path: '/settings' },
   ];
+
+  // Admin-only navigation items
+  const adminNavItems = [
+    { icon: UserCog, label: t('nav.users'), path: '/users' },
+  ];
+
+  // Combine navigation items based on user role
+  const navItems = user?.role === 'admin' 
+    ? [...baseNavItems, ...adminNavItems]
+    : baseNavItems;
   return (
     <>
       {/* Mobile Overlay */}

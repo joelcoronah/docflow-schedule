@@ -11,6 +11,7 @@ import PatientsPage from "./pages/PatientsPage";
 import PatientDetailPage from "./pages/PatientDetailPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import SettingsPage from "./pages/SettingsPage";
+import UsersPage from "./pages/UsersPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AuthCallbackPage from "./pages/AuthCallbackPage";
@@ -77,6 +78,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <UsersPage />
                 </ProtectedRoute>
               }
             />

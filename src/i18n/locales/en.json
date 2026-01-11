@@ -17,7 +17,8 @@
     "calendar": "Calendar",
     "patients": "Patients",
     "notifications": "Notifications",
-    "settings": "Settings"
+    "settings": "Settings",
+    "users": "Users"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -225,5 +226,33 @@
     "testCredentials": "Test credentials",
     "forgotPassword": "Forgot password?",
     "rememberMe": "Remember me"
+  },
+  "users": {
+    "title": "User Management",
+    "subtitle": "Manage doctors and administrators",
+    "addUser": "Add User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "createUser": "Create User",
+    "addUserDescription": "Create a new user account for a doctor or administrator",
+    "editUserDescription": "Update user information and permissions",
+    "deleteUserConfirmation": "Are you sure you want to delete {{name}}? This action cannot be undone.",
+    "noUsers": "No users found",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "phone": "Phone",
+    "specialization": "Specialization",
+    "licenseNumber": "License Number",
+    "role": "Role",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activeDescription": "Deactivate to prevent user from logging in",
+    "provider": "Provider",
+    "leaveBlankToKeep": "Leave blank to keep current password",
+    "roles": {
+      "doctor": "Doctor",
+      "admin": "Administrator"
+    }
   }
 }
