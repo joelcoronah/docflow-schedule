@@ -13,6 +13,16 @@ export interface Patient {
   updatedAt?: Date;
 }
 
+export interface MedicalRecordFile {
+  id: string;
+  medicalRecordId: string;
+  originalName: string;
+  mimeType: string;
+  fileSize: number;
+  fileData?: string; // base64 encoded file data (only when downloading)
+  uploadedAt: Date;
+}
+
 export interface MedicalRecord {
   id: string;
   date: Date;
@@ -20,6 +30,7 @@ export interface MedicalRecord {
   treatment: string;
   notes: string;
   attachments?: string[];
+  files?: MedicalRecordFile[];
 }
 
 export interface Appointment {

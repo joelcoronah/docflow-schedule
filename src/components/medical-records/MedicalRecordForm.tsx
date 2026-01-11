@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { FileUploader } from "./FileUploader";
 import { toast } from "sonner";
 
 interface MedicalRecordFormProps {
-  onSubmit: (data: MedicalRecordFormData) => void;
+  onSubmit: (data: MedicalRecordFormData, files: File[]) => void;
   onCancel: () => void;
+  initialData?: Partial<MedicalRecordFormData>;
+  isEditing?: boolean;
 }
 
 export interface MedicalRecordFormData {
@@ -21,13 +24,16 @@ export interface MedicalRecordFormData {
 export function MedicalRecordForm({
   onSubmit,
   onCancel,
+  initialData,
+  isEditing = false,
 }: MedicalRecordFormProps) {
   const [date, setDate] = useState(
-    new Date().toISOString().split("T")[0]
+    initialData?.date || new Date().toISOString().split("T")[0]
   );
-  const [diagnosis, setDiagnosis] = useState("");
-  const [treatment, setTreatment] = useState("");
-  const [notes, setNotes] = useState("");
+  const [diagnosis, setDiagnosis] = useState(initialData?.diagnosis || "");
+  const [treatment, setTreatment] = useState(initialData?.treatment || "");
+  const [notes, setNotes] = useState(initialData?.notes || "");
+  const [files, setFiles] = useState<File[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +48,7 @@ export function MedicalRecordForm({
       diagnosis,
       treatment,
       notes,
-    });
+    }, files);
   };
 
   return (
@@ -93,13 +99,26 @@ export function MedicalRecordForm({
             rows={3}
           />
         </div>
+
+        {!isEditing && (
+          <div className="space-y-2">
+            <Label>Attachments (Optional)</Label>
+            <FileUploader
+              onFilesSelected={setFiles}
+              maxFiles={5}
+              maxSizeInMB={10}
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex gap-3 justify-end">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">Add Medical Record</Button>
+        <Button type="submit">
+          {isEditing ? "Update Medical Record" : "Add Medical Record"}
+        </Button>
       </div>
     </form>
   );

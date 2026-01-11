@@ -23,7 +23,16 @@ import {
 } from "@/components/ui/dialog";
 import { usePatient, useUpdatePatient } from "@/hooks/use-patients";
 import { useAppointmentsByPatient } from "@/hooks/use-appointments";
-import { useCreateMedicalRecord } from "@/hooks/use-medical-records";
+import {
+  useCreateMedicalRecord,
+  useUpdateMedicalRecord,
+  useDeleteMedicalRecord,
+} from "@/hooks/use-medical-records";
+import {
+  useUploadMultipleFiles,
+  useDeleteFile,
+  useRenameFile,
+} from "@/hooks/use-medical-record-files";
 import {
   PatientForm,
   PatientFormData,
@@ -32,6 +41,7 @@ import {
   MedicalRecordForm,
   MedicalRecordFormData,
 } from "@/components/medical-records/MedicalRecordForm";
+import { MedicalRecordDetail } from "@/components/medical-records/MedicalRecordDetail";
 import { parseDateFromAPI, formatDateForAPI } from "@/lib/date-utils";
 import { toast } from "sonner";
 
@@ -39,12 +49,20 @@ const PatientDetailPage = () => {
   const { id } = useParams();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showMedicalRecordDialog, setShowMedicalRecordDialog] = useState(false);
+  const [editingMedicalRecord, setEditingMedicalRecord] = useState<
+    string | null
+  >(null);
 
   const { data: patient, isLoading: patientLoading } = usePatient(id!);
   const { data: appointmentsData, isLoading: appointmentsLoading } =
     useAppointmentsByPatient(id!);
   const updatePatientMutation = useUpdatePatient();
   const createMedicalRecordMutation = useCreateMedicalRecord();
+  const updateMedicalRecordMutation = useUpdateMedicalRecord();
+  const deleteMedicalRecordMutation = useDeleteMedicalRecord();
+  const uploadFilesMutation = useUploadMultipleFiles();
+  const deleteFileMutation = useDeleteFile();
+  const renameFileMutation = useRenameFile();
 
   const patientAppointments = appointmentsData?.data || [];
   const isLoading = patientLoading || appointmentsLoading;
@@ -66,22 +84,110 @@ const PatientDetailPage = () => {
     }
   };
 
-  const handleAddMedicalRecord = async (data: MedicalRecordFormData) => {
+  const handleAddMedicalRecord = async (
+    data: MedicalRecordFormData,
+    files: File[]
+  ) => {
     try {
-      await createMedicalRecordMutation.mutateAsync({
-        patientId: id!,
-        data: {
-          date: data.date,
-          diagnosis: data.diagnosis,
-          treatment: data.treatment,
-          notes: data.notes,
-          attachments: data.attachments || [],
-        },
-      });
+      // Check if we're editing or creating
+      if (editingMedicalRecord) {
+        // Update existing record
+        await updateMedicalRecordMutation.mutateAsync({
+          id: editingMedicalRecord,
+          data: {
+            date: data.date,
+            diagnosis: data.diagnosis,
+            treatment: data.treatment,
+            notes: data.notes,
+          },
+        });
+        toast.success("Medical record updated successfully");
+      } else {
+        // Create new record
+        const newRecord = await createMedicalRecordMutation.mutateAsync({
+          patientId: id!,
+          data: {
+            date: data.date,
+            diagnosis: data.diagnosis,
+            treatment: data.treatment,
+            notes: data.notes,
+            attachments: data.attachments || [],
+          },
+        });
+
+        // Then upload files if any
+        if (files.length > 0) {
+          await uploadFilesMutation.mutateAsync({
+            medicalRecordId: newRecord.id,
+            files: files,
+          });
+        }
+        toast.success("Medical record added successfully");
+      }
+
       setShowMedicalRecordDialog(false);
-      toast.success("Medical record added successfully");
+      setEditingMedicalRecord(null);
     } catch (error) {
-      toast.error("Failed to add medical record");
+      toast.error(
+        editingMedicalRecord
+          ? "Failed to update medical record"
+          : "Failed to add medical record"
+      );
+      console.error(error);
+    }
+  };
+
+  const handleEditMedicalRecord = (recordId: string) => {
+    setEditingMedicalRecord(recordId);
+    setShowMedicalRecordDialog(true);
+  };
+
+  const handleDeleteMedicalRecord = async (recordId: string) => {
+    try {
+      await deleteMedicalRecordMutation.mutateAsync(recordId);
+      toast.success("Medical record deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete medical record");
+      console.error(error);
+    }
+  };
+
+  const handleUploadFilesToRecord = async (recordId: string, files: File[]) => {
+    try {
+      await uploadFilesMutation.mutateAsync({
+        medicalRecordId: recordId,
+        files: files,
+      });
+      toast.success("Files uploaded successfully");
+    } catch (error) {
+      toast.error("Failed to upload files");
+      console.error(error);
+    }
+  };
+
+  const handleDeleteFile = async (medicalRecordId: string, fileId: string) => {
+    try {
+      await deleteFileMutation.mutateAsync({
+        medicalRecordId,
+        fileId,
+      });
+      toast.success("File deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete file");
+      console.error(error);
+    }
+  };
+
+  const handleRenameFile = async (medicalRecordId: string, fileId: string, newName: string) => {
+    try {
+      await renameFileMutation.mutateAsync({
+        medicalRecordId,
+        fileId,
+        newName,
+      });
+      toast.success("File renamed successfully");
+    } catch (error) {
+      toast.error("Failed to rename file");
       console.error(error);
     }
   };
@@ -219,39 +325,22 @@ const PatientDetailPage = () => {
               ) : (
                 <div className="space-y-4">
                   {patient.medicalRecords?.map((record) => (
-                    <div
+                    <MedicalRecordDetail
                       key={record.id}
-                      className="rounded-lg border border-border bg-background p-4"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <p className="font-medium text-foreground">
-                              {record.diagnosis}
-                            </p>
-                            <Badge variant="outline">
-                              {format(
-                                parseDateFromAPI(record.date),
-                                "MMM d, yyyy"
-                              )}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            <span className="font-medium">Treatment:</span>{" "}
-                            {record.treatment}
-                          </p>
-                          {record.notes && (
-                            <p className="text-sm text-muted-foreground">
-                              <span className="font-medium">Notes:</span>{" "}
-                              {record.notes}
-                            </p>
-                          )}
-                        </div>
-                        <Button variant="ghost" size="icon">
-                          <FileText className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
+                      record={record}
+                      onEdit={() => handleEditMedicalRecord(record.id)}
+                      onDelete={() => handleDeleteMedicalRecord(record.id)}
+                      onDeleteFile={(fileId) =>
+                        handleDeleteFile(record.id, fileId)
+                      }
+                      onRenameFile={(fileId, newName) =>
+                        handleRenameFile(record.id, fileId, newName)
+                      }
+                      onUploadFiles={(files) =>
+                        handleUploadFilesToRecord(record.id, files)
+                      }
+                      uploading={uploadFilesMutation.isPending}
+                    />
                   ))}
                 </div>
               )}
@@ -343,18 +432,45 @@ const PatientDetailPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Add Medical Record Dialog */}
+      {/* Add/Edit Medical Record Dialog */}
       <Dialog
         open={showMedicalRecordDialog}
-        onOpenChange={setShowMedicalRecordDialog}
+        onOpenChange={(open) => {
+          setShowMedicalRecordDialog(open);
+          if (!open) setEditingMedicalRecord(null);
+        }}
       >
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Add Medical Record</DialogTitle>
+            <DialogTitle>
+              {editingMedicalRecord
+                ? "Edit Medical Record"
+                : "Add Medical Record"}
+            </DialogTitle>
           </DialogHeader>
           <MedicalRecordForm
             onSubmit={handleAddMedicalRecord}
-            onCancel={() => setShowMedicalRecordDialog(false)}
+            onCancel={() => {
+              setShowMedicalRecordDialog(false);
+              setEditingMedicalRecord(null);
+            }}
+            initialData={
+              editingMedicalRecord && patient?.medicalRecords
+                ? (() => {
+                    const record = patient.medicalRecords.find(
+                      (r) => r.id === editingMedicalRecord
+                    );
+                    if (!record) return undefined;
+                    return {
+                      date: formatDateForAPI(parseDateFromAPI(record.date)),
+                      diagnosis: record.diagnosis,
+                      treatment: record.treatment,
+                      notes: record.notes,
+                    };
+                  })()
+                : undefined
+            }
+            isEditing={!!editingMedicalRecord}
           />
         </DialogContent>
       </Dialog>

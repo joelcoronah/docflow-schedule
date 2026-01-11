@@ -75,6 +75,8 @@ export function useUpdateMedicalRecord() {
     onSuccess: (data, { id }) => {
       queryClient.invalidateQueries({ queryKey: medicalRecordKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: medicalRecordKeys.all });
+      // Also invalidate patients queries
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
     },
   });
 }
@@ -89,6 +91,8 @@ export function useDeleteMedicalRecord() {
     mutationFn: (id: string) => deleteMedicalRecord(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: medicalRecordKeys.all });
+      // Also invalidate patients queries
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
     },
   });
 }
