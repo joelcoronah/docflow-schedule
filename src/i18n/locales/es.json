@@ -168,5 +168,30 @@
     "required": "Este campo es obligatorio",
     "invalidEmail": "Correo electrónico inválido",
     "invalidPhone": "Número de teléfono inválido"
+  },
+  "auth": {
+    "welcomeBack": "Bienvenido de Nuevo",
+    "loginSubtitle": "Inicia sesión para acceder al panel de tu consultorio",
+    "createAccount": "Crear Cuenta",
+    "registerSubtitle": "Únete a DocFlow para gestionar tu consultorio dental",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "fullName": "Nombre Completo",
+    "phone": "Teléfono",
+    "specialization": "Especialización",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión",
+    "loggingIn": "Iniciando sesión...",
+    "creatingAccount": "Creando cuenta...",
+    "orContinueWith": "O continuar con",
+    "noAccount": "¿No tienes una cuenta?",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "signUp": "Regístrate",
+    "signIn": "Inicia sesión",
+    "testCredentials": "Credenciales de prueba",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "rememberMe": "Recuérdame"
   }
 }

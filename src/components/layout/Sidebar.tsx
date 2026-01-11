@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -21,6 +22,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const { t } = useTranslation();
+  const { user, logout } = useAuth();
 
   const navItems = [
     { icon: LayoutDashboard, label: t('nav.dashboard'), path: '/' },
@@ -96,14 +98,24 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         <div className="border-t border-sidebar-border p-4">
           <div className="flex items-center gap-2 rounded-lg px-4 py-3">
             <div className="h-9 w-9 rounded-full bg-sidebar-accent flex items-center justify-center shrink-0">
-              <span className="text-sm font-semibold text-sidebar-foreground">DR</span>
+              <span className="text-sm font-semibold text-sidebar-foreground">
+                {user?.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'DR'}
+              </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground">Dr. Roberts</p>
-              <p className="text-xs text-sidebar-foreground/60">Dental Clinic</p>
+              <p className="text-sm font-medium text-sidebar-foreground truncate">
+                {user?.name || 'Doctor'}
+              </p>
+              <p className="text-xs text-sidebar-foreground/60 truncate">
+                {user?.specialization || 'Dental Practice'}
+              </p>
             </div>
             <LanguageSwitcher />
-            <button className="rounded-lg p-2 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors">
+            <button 
+              onClick={logout}
+              className="rounded-lg p-2 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors"
+              title={t('auth.logout')}
+            >
               <LogOut className="h-4 w-4" />
             </button>
           </div>

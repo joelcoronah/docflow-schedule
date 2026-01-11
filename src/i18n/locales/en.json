@@ -200,5 +200,30 @@
     "required": "This field is required",
     "invalidEmail": "Invalid email address",
     "invalidPhone": "Invalid phone number"
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "loginSubtitle": "Sign in to access your dental practice dashboard",
+    "createAccount": "Create Account",
+    "registerSubtitle": "Join DocFlow to manage your dental practice",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "specialization": "Specialization",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "loggingIn": "Logging in...",
+    "creatingAccount": "Creating account...",
+    "orContinueWith": "Or continue with",
+    "noAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "signUp": "Sign up",
+    "signIn": "Sign in",
+    "testCredentials": "Test credentials",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me"
   }
 }
