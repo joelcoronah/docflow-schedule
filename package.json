@@ -1,7 +1,28 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "docflow",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Complete medical practice management solution for healthcare professionals",
+  "author": "DocFlow Team",
+  "license": "MIT",
+  "keywords": [
+    "medical",
+    "healthcare",
+    "practice-management",
+    "appointments",
+    "patient-records",
+    "medical-records",
+    "scheduling",
+    "dental-practice"
+  ],
+  "homepage": "https://docflow-schedule-production.up.railway.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/docflow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/docflow/issues"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

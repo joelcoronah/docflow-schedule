@@ -1,3 +1,16 @@
+# DocFlow - Medical Practice Management System
+# https://docflow-schedule-production.up.railway.app
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemap
+Sitemap: https://docflow-schedule-production.up.railway.app/sitemap.xml
+
+# Specific bots
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +23,8 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: LinkedInBot
 Allow: /
+
+# Crawl delay
+Crawl-delay: 1

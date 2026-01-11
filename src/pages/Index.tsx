@@ -99,7 +99,10 @@ const Index = () => {
           <>
             <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <UpcomingAppointments appointments={todayAppointments} />
+                <UpcomingAppointments 
+                  appointments={todayAppointments} 
+                  patients={recentPatients}
+                />
               </div>
               <div className="space-y-4 sm:space-y-6">
                 <NotificationsWidget notifications={notifications} />

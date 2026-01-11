@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   format,
   startOfMonth,
@@ -9,6 +9,7 @@ import {
   addMonths,
   subMonths,
   isToday,
+  startOfDay,
 } from 'date-fns';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
@@ -24,6 +25,7 @@ import {
   AppointmentForm,
   AppointmentFormData,
 } from '@/components/appointments/AppointmentForm';
+import { AppointmentActions } from '@/components/appointments/AppointmentActions';
 import { useAppointments, useCreateAppointment } from '@/hooks/use-appointments';
 import { usePatients, useCreatePatient } from '@/hooks/use-patients';
 import { Patient } from '@/types';
@@ -43,6 +45,11 @@ const CalendarPage = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showNewAppointment, setShowNewAppointment] = useState(false);
+
+  // Auto-select today's date on mount
+  useEffect(() => {
+    setSelectedDate(startOfDay(new Date()));
+  }, []);
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -228,7 +235,7 @@ const CalendarPage = () => {
                       className="rounded-lg border border-border bg-background p-4 transition-all hover:shadow-md"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <p className="font-medium text-foreground">
                             {apt.patientName}
                           </p>
@@ -236,9 +243,16 @@ const CalendarPage = () => {
                             {apt.time} • {apt.duration} min
                           </p>
                         </div>
-                        <Badge className={statusColors[apt.status]}>
-                          {apt.status}
-                        </Badge>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Badge className={statusColors[apt.status]}>
+                            {apt.status}
+                          </Badge>
+                          <AppointmentActions
+                            appointment={apt}
+                            patients={patients}
+                            variant="sm"
+                          />
+                        </div>
                       </div>
                       <p className="text-sm text-muted-foreground mt-2 capitalize">
                         {apt.type}
@@ -272,6 +286,8 @@ const CalendarPage = () => {
             onSubmit={handleNewAppointment}
             onCancel={() => setShowNewAppointment(false)}
             onPatientCreated={handlePatientCreated}
+            initialDate={selectedDate || undefined}
+            disablePastDates
           />
         </DialogContent>
       </Dialog>

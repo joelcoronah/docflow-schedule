@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
+import { useState, useEffect } from 'react';
+import { format, startOfDay, isBefore } from 'date-fns';
 import { CalendarIcon, Clock, User, FileText, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,6 +34,10 @@ interface AppointmentFormProps {
   onSubmit: (data: AppointmentFormData) => void;
   onCancel: () => void;
   onPatientCreated?: (patient: Patient) => void;
+  initialDate?: Date; // Pre-selected date from calendar
+  initialData?: Partial<AppointmentFormData>; // Pre-fill form data for editing
+  disablePastDates?: boolean; // Block dates before today
+  isEditing?: boolean; // Hide "Register New Patient" button in edit mode
 }
 
 export interface AppointmentFormData {
@@ -60,14 +64,43 @@ const timeSlots = Array.from({ length: 20 }, (_, i) => {
   return `${hour.toString().padStart(2, '0')}:${minute}`;
 });
 
-export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated }: AppointmentFormProps) {
-  const [date, setDate] = useState<Date>();
-  const [patientId, setPatientId] = useState('');
-  const [time, setTime] = useState('');
-  const [duration, setDuration] = useState('30');
-  const [type, setType] = useState<AppointmentType>('checkup');
-  const [notes, setNotes] = useState('');
+export function AppointmentForm({ 
+  patients, 
+  onSubmit, 
+  onCancel, 
+  onPatientCreated,
+  initialDate,
+  initialData,
+  disablePastDates = false,
+  isEditing = false,
+}: AppointmentFormProps) {
+  const [date, setDate] = useState<Date | undefined>(initialData?.date);
+  const [patientId, setPatientId] = useState(initialData?.patientId || '');
+  const [time, setTime] = useState(initialData?.time || '');
+  const [duration, setDuration] = useState(initialData?.duration?.toString() || '30');
+  const [type, setType] = useState<AppointmentType>(initialData?.type || 'checkup');
+  const [notes, setNotes] = useState(initialData?.notes || '');
   const [showPatientDialog, setShowPatientDialog] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false); // State to control calendar popover
+
+  // Update form fields when initialData changes (for editing)
+  useEffect(() => {
+    if (initialData) {
+      setDate(initialData.date);
+      setPatientId(initialData.patientId || '');
+      setTime(initialData.time || '');
+      setDuration(initialData.duration?.toString() || '30');
+      setType(initialData.type || 'checkup');
+      setNotes(initialData.notes || '');
+    }
+  }, [initialData]);
+
+  // Set initial date if provided (from calendar)
+  useEffect(() => {
+    if (initialDate && !initialData?.date) {
+      setDate(initialDate);
+    }
+  }, [initialDate, initialData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,6 +118,12 @@ export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated
       type,
       notes,
     });
+  };
+
+  // Handle date selection and close calendar
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    setIsCalendarOpen(false); // Close calendar after selection
   };
 
   // Handle new patient creation
@@ -124,18 +163,24 @@ export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="patient">Patient *</Label>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setShowPatientDialog(true)}
-              className="gap-2"
-            >
-              <UserPlus className="h-4 w-4" />
-              Register New Patient
-            </Button>
+            {!isEditing && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPatientDialog(true)}
+                className="gap-2"
+              >
+                <UserPlus className="h-4 w-4" />
+                Register New Patient
+              </Button>
+            )}
           </div>
-          <Select value={patientId} onValueChange={setPatientId}>
+          <Select 
+            key={`patient-${patientId}`} 
+            value={patientId} 
+            onValueChange={setPatientId}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select a patient" />
             </SelectTrigger>
@@ -152,7 +197,7 @@ export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label>Date *</Label>
-            <Popover>
+            <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -169,7 +214,12 @@ export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={setDate}
+                  onSelect={handleDateSelect}
+                  disabled={
+                    disablePastDates
+                      ? (date) => isBefore(startOfDay(date), startOfDay(new Date()))
+                      : undefined
+                  }
                   initialFocus
                   className="pointer-events-auto"
                 />
@@ -179,7 +229,11 @@ export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated
 
           <div className="space-y-2">
             <Label htmlFor="time">Time *</Label>
-            <Select value={time} onValueChange={setTime}>
+            <Select 
+              key={`time-${time}`} 
+              value={time} 
+              onValueChange={setTime}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select time" />
               </SelectTrigger>
@@ -197,7 +251,11 @@ export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="type">Appointment Type</Label>
-            <Select value={type} onValueChange={(v) => setType(v as AppointmentType)}>
+            <Select 
+              key={`type-${type}`} 
+              value={type} 
+              onValueChange={(v) => setType(v as AppointmentType)}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -213,7 +271,11 @@ export function AppointmentForm({ patients, onSubmit, onCancel, onPatientCreated
 
           <div className="space-y-2">
             <Label htmlFor="duration">Duration (minutes)</Label>
-            <Select value={duration} onValueChange={setDuration}>
+            <Select 
+              key={`duration-${duration}`} 
+              value={duration} 
+              onValueChange={setDuration}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

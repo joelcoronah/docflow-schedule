@@ -1,12 +1,14 @@
 import { format } from 'date-fns';
 import { Clock, User, MoreVertical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Appointment } from '@/types';
+import { Appointment, Patient } from '@/types';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { AppointmentActions } from '@/components/appointments/AppointmentActions';
 
 interface UpcomingAppointmentsProps {
   appointments: Appointment[];
+  patients: Patient[];
 }
 
 const statusColors = {
@@ -26,7 +28,7 @@ const typeIcons = {
   'follow-up': '📋',
 };
 
-export function UpcomingAppointments({ appointments }: UpcomingAppointmentsProps) {
+export function UpcomingAppointments({ appointments, patients }: UpcomingAppointmentsProps) {
   const { t } = useTranslation();
   
   return (
@@ -67,9 +69,11 @@ export function UpcomingAppointments({ appointments }: UpcomingAppointmentsProps
                 </div>
               </div>
 
-              <button className="rounded-lg p-1.5 sm:p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors shrink-0">
-                <MoreVertical className="h-4 w-4 sm:h-5 sm:w-5" />
-              </button>
+              <AppointmentActions
+                appointment={appointment}
+                patients={patients}
+                variant="sm"
+              />
             </div>
           ))
         )}
