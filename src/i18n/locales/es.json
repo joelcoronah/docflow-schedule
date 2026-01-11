@@ -1,0 +1,172 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "search": "Buscar",
+    "viewAll": "Ver Todo",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "back": "Volver"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "calendar": "Calendario",
+    "patients": "Pacientes",
+    "notifications": "Notificaciones",
+    "settings": "Configuración"
+  },
+  "dashboard": {
+    "title": "Panel de Control",
+    "welcome": "Bienvenido de nuevo, Dr. Roberts. Aquí está el resumen de su práctica.",
+    "todayAppointments": "Citas de Hoy",
+    "thisWeek": "Esta Semana",
+    "totalPatients": "Total de Pacientes",
+    "pendingFollowUps": "Seguimientos Pendientes",
+    "todaySchedule": "Agenda de Hoy",
+    "recentPatients": "Pacientes Recientes",
+    "noAppointments": "No hay citas programadas para hoy",
+    "lastVisit": "Última visita",
+    "fromLastWeek": "desde la semana pasada",
+    "loadingData": "Cargando datos del panel..."
+  },
+  "appointments": {
+    "title": "Citas",
+    "newAppointment": "Nueva Cita",
+    "scheduleAppointment": "Programar Cita",
+    "editAppointment": "Editar Cita",
+    "date": "Fecha",
+    "time": "Hora",
+    "duration": "Duración",
+    "type": "Tipo",
+    "status": "Estado",
+    "notes": "Notas",
+    "patient": "Paciente",
+    "selectPatient": "Seleccionar paciente",
+    "selectDate": "Seleccionar fecha",
+    "selectTime": "Seleccionar hora",
+    "minutes": "minutos",
+    "types": {
+      "checkup": "Revisión",
+      "cleaning": "Limpieza",
+      "procedure": "Procedimiento",
+      "consultation": "Consulta",
+      "emergency": "Emergencia",
+      "followUp": "Seguimiento"
+    },
+    "statuses": {
+      "scheduled": "Programada",
+      "confirmed": "Confirmada",
+      "completed": "Completada",
+      "cancelled": "Cancelada",
+      "noShow": "No Asistió"
+    },
+    "success": {
+      "created": "Cita programada exitosamente",
+      "updated": "Cita actualizada exitosamente",
+      "deleted": "Cita eliminada exitosamente"
+    },
+    "error": {
+      "create": "Error al programar la cita",
+      "update": "Error al actualizar la cita",
+      "delete": "Error al eliminar la cita"
+    }
+  },
+  "patients": {
+    "title": "Pacientes",
+    "addPatient": "Agregar Paciente",
+    "editPatient": "Editar Paciente",
+    "patientDetails": "Detalles del Paciente",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "dateOfBirth": "Fecha de Nacimiento",
+    "address": "Dirección",
+    "notes": "Notas",
+    "medicalHistory": "Historia Médica",
+    "upcomingAppointments": "Próximas Citas",
+    "noMedicalRecords": "No se encontraron registros médicos",
+    "noAppointments": "No hay próximas citas",
+    "patientSince": "Paciente desde",
+    "addRecord": "Agregar Registro",
+    "addMedicalRecord": "Agregar Registro Médico",
+    "diagnosis": "Diagnóstico",
+    "treatment": "Tratamiento",
+    "additionalNotes": "Notas Adicionales",
+    "filters": {
+      "title": "Filtrar Pacientes",
+      "description": "Refine su lista de pacientes con filtros y opciones de ordenamiento",
+      "sortBy": "Ordenar Por",
+      "dateAdded": "Fecha de Registro",
+      "activeFilters": "Filtros Activos",
+      "clearAll": "Limpiar Todo",
+      "sort": {
+        "nameAsc": "Nombre (A-Z)",
+        "nameDesc": "Nombre (Z-A)",
+        "dateNewest": "Más Recientes",
+        "dateOldest": "Más Antiguos",
+        "ageYoungest": "Más Jóvenes",
+        "ageOldest": "Más Mayores"
+      },
+      "dateRange": {
+        "all": "Todo el Tiempo",
+        "lastWeek": "Última Semana",
+        "lastMonth": "Último Mes",
+        "last3Months": "Últimos 3 Meses",
+        "lastYear": "Último Año"
+      }
+    },
+    "success": {
+      "created": "Paciente agregado exitosamente",
+      "updated": "Paciente actualizado exitosamente",
+      "deleted": "Paciente eliminado exitosamente",
+      "recordAdded": "Registro médico agregado exitosamente"
+    },
+    "error": {
+      "create": "Error al agregar paciente",
+      "update": "Error al actualizar paciente",
+      "delete": "Error al eliminar paciente",
+      "recordAdd": "Error al agregar registro médico"
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAsRead": "Marcar como leída",
+    "markAllAsRead": "Marcar todas como leídas",
+    "noNotifications": "No hay notificaciones",
+    "types": {
+      "appointment": "Cita",
+      "reminder": "Recordatorio",
+      "alert": "Alerta",
+      "info": "Información"
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "theme": "Tema",
+    "profile": "Perfil",
+    "preferences": "Preferencias",
+    "selectLanguage": "Seleccionar Idioma",
+    "languages": {
+      "en": "Inglés",
+      "es": "Español"
+    }
+  },
+  "calendar": {
+    "title": "Calendario",
+    "today": "Hoy",
+    "month": "Mes",
+    "week": "Semana",
+    "day": "Día",
+    "noAppointmentsForDate": "No hay citas para esta fecha"
+  },
+  "forms": {
+    "required": "Este campo es obligatorio",
+    "invalidEmail": "Correo electrónico inválido",
+    "invalidPhone": "Número de teléfono inválido"
+  }
+}

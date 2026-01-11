@@ -1,5 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Bell, Calendar, AlertCircle, Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Notification } from '@/types';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
@@ -23,13 +24,14 @@ const colorMap = {
 };
 
 export function NotificationsWidget({ notifications }: NotificationsWidgetProps) {
+  const { t } = useTranslation();
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="rounded-lg sm:rounded-xl border border-border bg-card p-4 sm:p-6 animate-slide-up">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-base sm:text-lg font-semibold text-foreground">Notifications</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-foreground">{t('notifications.title')}</h2>
           {unreadCount > 0 && (
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
               {unreadCount}
@@ -37,7 +39,7 @@ export function NotificationsWidget({ notifications }: NotificationsWidgetProps)
           )}
         </div>
         <Link to="/notifications" className="text-xs sm:text-sm text-primary hover:text-primary/80 font-medium transition-colors">
-          View All
+          {t('common.viewAll')}
         </Link>
       </div>
 

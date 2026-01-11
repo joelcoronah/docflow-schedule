@@ -9,16 +9,10 @@ import {
   LogOut,
   X
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-
-const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-  { icon: Calendar, label: 'Calendar', path: '/calendar' },
-  { icon: Users, label: 'Patients', path: '/patients' },
-  { icon: Bell, label: 'Notifications', path: '/notifications' },
-  { icon: Settings, label: 'Settings', path: '/settings' },
-];
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -26,6 +20,15 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
+  const { t } = useTranslation();
+
+  const navItems = [
+    { icon: LayoutDashboard, label: t('nav.dashboard'), path: '/' },
+    { icon: Calendar, label: t('nav.calendar'), path: '/calendar' },
+    { icon: Users, label: t('nav.patients'), path: '/patients' },
+    { icon: Bell, label: t('nav.notifications'), path: '/notifications' },
+    { icon: Settings, label: t('nav.settings'), path: '/settings' },
+  ];
   return (
     <>
       {/* Mobile Overlay */}
@@ -91,14 +94,15 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
         {/* Footer */}
         <div className="border-t border-sidebar-border p-4">
-          <div className="flex items-center gap-3 rounded-lg px-4 py-3">
-            <div className="h-9 w-9 rounded-full bg-sidebar-accent flex items-center justify-center">
+          <div className="flex items-center gap-2 rounded-lg px-4 py-3">
+            <div className="h-9 w-9 rounded-full bg-sidebar-accent flex items-center justify-center shrink-0">
               <span className="text-sm font-semibold text-sidebar-foreground">DR</span>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-sidebar-foreground">Dr. Roberts</p>
               <p className="text-xs text-sidebar-foreground/60">Dental Clinic</p>
             </div>
+            <LanguageSwitcher />
             <button className="rounded-lg p-2 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors">
               <LogOut className="h-4 w-4" />
             </button>

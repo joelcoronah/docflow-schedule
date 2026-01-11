@@ -1,0 +1,204 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "viewAll": "View All",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "patients": "Patients",
+    "notifications": "Notifications",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, Dr. Roberts. Here's your practice overview.",
+    "todayAppointments": "Today's Appointments",
+    "thisWeek": "This Week",
+    "totalPatients": "Total Patients",
+    "pendingFollowUps": "Pending Follow-ups",
+    "todaySchedule": "Today's Schedule",
+    "recentPatients": "Recent Patients",
+    "noAppointments": "No appointments scheduled for today",
+    "lastVisit": "Last visit",
+    "fromLastWeek": "from last week",
+    "loadingData": "Loading dashboard data..."
+  },
+  "appointments": {
+    "title": "Appointments",
+    "newAppointment": "New Appointment",
+    "scheduleAppointment": "Schedule Appointment",
+    "editAppointment": "Edit Appointment",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "type": "Type",
+    "status": "Status",
+    "notes": "Notes",
+    "patient": "Patient",
+    "selectPatient": "Select patient",
+    "selectDate": "Select date",
+    "selectTime": "Select time",
+    "minutes": "minutes",
+    "types": {
+      "checkup": "Checkup",
+      "cleaning": "Cleaning",
+      "procedure": "Procedure",
+      "consultation": "Consultation",
+      "emergency": "Emergency",
+      "followUp": "Follow-up"
+    },
+    "statuses": {
+      "scheduled": "Scheduled",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "noShow": "No Show"
+    },
+    "success": {
+      "created": "Appointment scheduled successfully",
+      "updated": "Appointment updated successfully",
+      "deleted": "Appointment deleted successfully"
+    },
+    "error": {
+      "create": "Failed to schedule appointment",
+      "update": "Failed to update appointment",
+      "delete": "Failed to delete appointment"
+    }
+  },
+  "patients": {
+    "title": "Patients",
+    "addPatient": "Add Patient",
+    "editPatient": "Edit Patient",
+    "patientDetails": "Patient Details",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "dateOfBirth": "Date of Birth",
+    "address": "Address",
+    "notes": "Notes",
+    "medicalHistory": "Medical History",
+    "upcomingAppointments": "Upcoming Appointments",
+    "noMedicalRecords": "No medical records found",
+    "noAppointments": "No upcoming appointments",
+    "patientSince": "Patient since",
+    "addRecord": "Add Record",
+    "addMedicalRecord": "Add Medical Record",
+    "diagnosis": "Diagnosis",
+    "treatment": "Treatment",
+    "additionalNotes": "Additional Notes",
+    "filters": {
+      "title": "Filter Patients",
+      "description": "Refine your patient list with filters and sorting options",
+      "sortBy": "Sort By",
+      "dateAdded": "Date Added",
+      "activeFilters": "Active Filters",
+      "clearAll": "Clear All",
+      "sort": {
+        "nameAsc": "Name (A-Z)",
+        "nameDesc": "Name (Z-A)",
+        "dateNewest": "Newest First",
+        "dateOldest": "Oldest First",
+        "ageYoungest": "Youngest First",
+        "ageOldest": "Oldest First"
+      },
+      "dateRange": {
+        "all": "All Time",
+        "lastWeek": "Last Week",
+        "lastMonth": "Last Month",
+        "last3Months": "Last 3 Months",
+        "lastYear": "Last Year"
+      }
+    },
+    "searchPlaceholder": "Search patients...",
+    "showing": "Showing {{count}} of {{total}} patients",
+    "noResults": "No patients found matching your search.",
+    "filters": {
+      "title": "Filters",
+      "sortBy": "Sort By",
+      "sortOrder": "Sort Order",
+      "ageRange": "Age Range",
+      "appointments": "Appointments",
+      "apply": "Apply Filters",
+      "clear": "Clear Filters",
+      "sortOptions": {
+        "name": "Name",
+        "date": "Date Added",
+        "age": "Age"
+      },
+      "orderOptions": {
+        "asc": "Ascending (A-Z)",
+        "desc": "Descending (Z-A)"
+      },
+      "ageOptions": {
+        "all": "All Ages",
+        "child": "Children",
+        "adult": "Adults",
+        "senior": "Seniors"
+      },
+      "appointmentOptions": {
+        "all": "All Patients",
+        "yes": "With Appointments",
+        "no": "Without Appointments"
+      }
+    },
+    "success": {
+      "created": "Patient added successfully",
+      "updated": "Patient updated successfully",
+      "deleted": "Patient deleted successfully",
+      "recordAdded": "Medical record added successfully"
+    },
+    "error": {
+      "create": "Failed to add patient",
+      "update": "Failed to update patient",
+      "delete": "Failed to delete patient",
+      "recordAdd": "Failed to add medical record"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAsRead": "Mark as read",
+    "markAllAsRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "types": {
+      "appointment": "Appointment",
+      "reminder": "Reminder",
+      "alert": "Alert",
+      "info": "Info"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "selectLanguage": "Select Language",
+    "languages": {
+      "en": "English",
+      "es": "Spanish"
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "noAppointmentsForDate": "No appointments for this date"
+  },
+  "forms": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "invalidPhone": "Invalid phone number"
+  }
+}

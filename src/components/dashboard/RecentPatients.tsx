@@ -1,5 +1,6 @@
 import { formatDistanceToNow } from "date-fns";
 import { ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Patient } from "@/types";
 import { Link } from "react-router-dom";
 import { parseDateFromAPI } from "@/lib/date-utils";
@@ -9,17 +10,19 @@ interface RecentPatientsProps {
 }
 
 export function RecentPatients({ patients }: RecentPatientsProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="rounded-lg sm:rounded-xl border border-border bg-card p-4 sm:p-6 animate-slide-up">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <h2 className="text-base sm:text-lg font-semibold text-foreground">
-          Recent Patients
+          {t('dashboard.recentPatients')}
         </h2>
         <Link
           to="/patients"
           className="text-xs sm:text-sm text-primary hover:text-primary/80 font-medium transition-colors"
         >
-          View All
+          {t('common.viewAll')}
         </Link>
       </div>
 
@@ -44,7 +47,7 @@ export function RecentPatients({ patients }: RecentPatientsProps) {
               </p>
               {patient.createdAt && (
                 <p className="text-xs sm:text-sm text-muted-foreground truncate">
-                  Last visit{" "}
+                  {t('dashboard.lastVisit')}{" "}
                   {formatDistanceToNow(parseDateFromAPI(patient.createdAt), {
                     addSuffix: true,
                   })}

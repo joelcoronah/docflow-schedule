@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { Clock, User, MoreVertical } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Appointment } from '@/types';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -26,16 +27,18 @@ const typeIcons = {
 };
 
 export function UpcomingAppointments({ appointments }: UpcomingAppointmentsProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="rounded-lg sm:rounded-xl border border-border bg-card p-4 sm:p-6 animate-slide-up">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-6">
-        <h2 className="text-base sm:text-lg font-semibold text-foreground">Today's Schedule</h2>
+        <h2 className="text-base sm:text-lg font-semibold text-foreground">{t('dashboard.todaySchedule')}</h2>
         <span className="text-xs sm:text-sm text-muted-foreground">{format(new Date(), 'EEEE, MMMM d')}</span>
       </div>
       
       <div className="space-y-3 sm:space-y-4">
         {appointments.length === 0 ? (
-          <p className="text-center text-sm sm:text-base text-muted-foreground py-6 sm:py-8">No appointments scheduled for today</p>
+          <p className="text-center text-sm sm:text-base text-muted-foreground py-6 sm:py-8">{t('dashboard.noAppointments')}</p>
         ) : (
           appointments.map((appointment, index) => (
             <div

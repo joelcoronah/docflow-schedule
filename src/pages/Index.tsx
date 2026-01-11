@@ -1,4 +1,5 @@
 import { Calendar, Users, Clock, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
@@ -11,6 +12,7 @@ import { useNotifications } from "@/hooks/use-notifications";
 import { formatDateForAPI } from "@/lib/date-utils";
 
 const Index = () => {
+  const { t } = useTranslation();
   const today = formatDateForAPI(new Date());
 
   // Fetch data using React Query hooks
@@ -49,34 +51,34 @@ const Index = () => {
       <div className="space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Header */}
         <div className="animate-fade-in">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{t('dashboard.title')}</h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-1">
-            Welcome back, Dr. Roberts. Here's your practice overview.
+            {t('dashboard.welcome')}
           </p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4">
           <StatsCard
-            title="Today's Appointments"
+            title={t('dashboard.todayAppointments')}
             value={stats.todayAppointments}
             icon={Calendar}
             variant="primary"
           />
           <StatsCard
-            title="This Week"
+            title={t('dashboard.thisWeek')}
             value={stats.weekAppointments}
             icon={Clock}
             trend={{ value: 12, isPositive: true }}
           />
           <StatsCard
-            title="Total Patients"
+            title={t('dashboard.totalPatients')}
             value={stats.totalPatients}
             icon={Users}
             variant="success"
           />
           <StatsCard
-            title="Pending Follow-ups"
+            title={t('dashboard.pendingFollowUps')}
             value={stats.pendingFollowUps}
             icon={AlertCircle}
             variant="accent"
@@ -87,7 +89,7 @@ const Index = () => {
         {isLoading && (
           <div className="flex items-center justify-center py-12">
             <div className="text-muted-foreground">
-              Loading dashboard data...
+              {t('dashboard.loadingData')}
             </div>
           </div>
         )}
