@@ -1,0 +1,14 @@
+# Ignore bun lockfile - force npm usage
+bun.lockb
+
+# Ignore node_modules
+node_modules/
+
+# Ignore development files
+.env.local
+.env.development
+*.log
+
+# Ignore build artifacts
+dist/
+.vite/
