@@ -1,0 +1,8 @@
+# Frontend dev image: install deps and run Vite dev server (hot reload).
+# Source is mounted at runtime via docker-compose.dev.yml.
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+EXPOSE 8080
+CMD ["npm", "run", "dev"]
