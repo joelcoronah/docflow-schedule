@@ -13,9 +13,9 @@ ENV VITE_API_URL=$VITE_API_URL
 
 COPY package*.json ./
 # Cache npm store between builds so installs are fast after the first run.
-# Use npm ci for speed and reproducibility when package-lock.json is present.
+# Use npm install so build works when package-lock.json is out of sync; run `npm install` locally and commit lock file to refresh.
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci
+    npm install
 COPY . .
 RUN npm run build
 
