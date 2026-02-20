@@ -1,5 +1,7 @@
 # DocFlow Frontend - React + Vite SPA
 # API URL is set at build time via VITE_API_URL (required for production)
+# syntax=docker/dockerfile:1
+# Use BuildKit for cache mounts: DOCKER_BUILDKIT=1 (default in Docker 23+)
 
 # ---- Build stage ----
 FROM node:20-alpine AS build
@@ -10,8 +12,10 @@ ARG VITE_API_URL=http://localhost:3000/api
 ENV VITE_API_URL=$VITE_API_URL
 
 COPY package*.json ./
-# Use npm install so build works if package-lock.json is out of sync (run `npm install` locally to refresh lock file)
-RUN npm install
+# Cache npm store between builds so installs are fast after the first run.
+# Use npm ci for speed and reproducibility when package-lock.json is present.
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 COPY . .
 RUN npm run build
 
